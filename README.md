@@ -9,7 +9,7 @@ Below are some files used for collecting data for tracts in the most populous co
 
 Data files:
 
-| File name | Source | Description |
+| <div style="width:100px">File name</div> | <div style="width:250px">Source </div>| <div style="width:250px">Description</div> |
 | --- | --- | --- |
 | 2021_Gaz_tracts_national.txt | https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html | A file mapping census tract IDs to land area to use to calculate population and housing densities |
 | co-est2019-alldata.csv | https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv | A file containing the population estimates for all counties in the US. This is used to identify the most populous counties. |
