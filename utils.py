@@ -16,6 +16,7 @@ create_session = lambda : requests.Session()
 # Reading files
 
 # This lambda is passed around to config the requests for Census data
+# Following instructions from: https://api.census.gov/data/2019/acs/acs5/examples.html & https://api.census.gov/data/2019/acs/acs5/profile/examples.html
 config = lambda x, y, z, a, b: {
     'base': 'https://api.census.gov/data',
     'date': y,
@@ -32,7 +33,7 @@ config = lambda x, y, z, a, b: {
 #https://api.census.gov/data/2019/acs/acs5?get=NAME,B01001_001E&for=block%20group:*&in=state:01&in=county:001&in=tract:*&key=YOUR_KEY_GOES_HERE
 def format_request(base, endpoint, date, codes, state, county, key):
     codes = f"get=NAME,{','.join(map(str,codes))}"
-    bg = f'for=block%20group:*'
+    #bg = f'for=block%20group:*'
     state = f'in=state:{state}'
     county = f'in=county:{county}'
     tract = f'for=tract:*'
@@ -109,18 +110,13 @@ def result_to_dataframe(res):
     return x
 
         
-def gather_results(session, part, config, state_county, codes, dfs=[], start=0, debug=False):
+def gather_results(session, acs_endpoints, config, state_county, codes, dfs=[], start=0, debug=False):
     """ Main entry point into the execution of a call to the census API. Requires:
     (1) session: requests.Session
-    (2) part:    the partition containin source and variables to query
-    (3) beg, end: start and end years to query
-    (4) config:   the configuration lambda
-    (5) skip_list: a shortlist of variables to skip
-    (6) state_place: list of valid states and places
-    (7) partitions: the full partition list from codebook
-    (8) exception: a list of problematic variables to skip
-    (9) start: the failure point of the current index when an error is thrown
-    (10) debug: flag to indicate if error reporting should be included.
+    (2) part:  a list of acs_endpoints
+    (3) config:   the configuration lambda at the top of this file
+    (4) codes: a dictionary of strings of an ACS source (i.e. acs5 or acs5/profile) mapping to a list of string variable names
+    (5) state_county: list of valid states and counties
     """
     failure_point = -1
     for i in range(start, len(state_county)):
@@ -131,7 +127,7 @@ def gather_results(session, part, config, state_county, codes, dfs=[], start=0, 
             # Reach this is the state-county is valid.
             # we make a bunch of requests and append the results to a list
             year=2019
-            tmp = [small_batch_all(session, codes, config, part, year, pad_with_zero(state), pad_place_with_zero(county), debug=False)]
+            tmp = [small_batch_all(session, codes, config, acs_endpoints, year, pad_with_zero(state), pad_place_with_zero(county), debug=False)]
             #print(tmp)
             list(map(lambda x: tmp.remove(x) if type(x) != pd.DataFrame else x, tmp[:]))
             if len(tmp) != 0:
@@ -150,25 +146,6 @@ def gather_results(session, part, config, state_county, codes, dfs=[], start=0, 
         return 0
 
 
-# Safe accessors
-def print_ret(x):
-    return unpad_place_with_zero(x)
-
-def print_ret_z(x):
-    return unpad_with_zero(x)
-
-def safe_place_get(d, state, place, date, ind):
-    
-    val = d[state].get(place, np.nan)
-    if pd.isnull(val):
-        return val
-    else:
-        opt = val.get(date, np.nan)
-        if pd.isnull(opt):
-            return opt
-        else:
-            return opt[ind]  
-
 zeros = lambda x: "".join(map(str, repeat("0", x)))
 
 pad_with_zeros = lambda x, y: str(x) if y - len(str(x)) == 0 else zeros(y - len(str(x)))+str(x)
@@ -183,9 +160,6 @@ def pad_tract_with_zero(x):
         val = "0"+val
     return val
 
-unpad_with_zero =  lambda x : x.lstrip('0') if x[0] == '0' else x
-
-unpad_place_with_zero =  lambda x : x[1:] if x[0] == '0' else x
         
 
           
