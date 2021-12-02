@@ -1,0 +1,131 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r load packages, message = FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(AER) 
+library(dplyr)
+
+
+library(ggplot2) 
+library(patchwork)
+```
+
+```{r load draft data}
+#Read in the data
+d <- fread('joined_results.tsv')
+
+
+head(d)
+names(d)
+```
+
+```{r}
+#Joined data contains 2 rows per response per person
+#Filter out the row that does not match their response
+
+#Convert Property (i.e. Potential Answer) to a character from an int
+d[ , Property := paste("Property", as.character(Property))]
+d
+```
+
+```{r}
+#Filter to where user input property == potential response Property
+d_filtered = d[ property == Property , ]
+d_filtered
+```
+
+
+
+```{r}
+#For every row, create a column that is the value difference of white to non white
+#i.e. If race==white of response, abs_value_diff, else use -abs_value_diff
+
+#Using data.table fifelse
+d_filtered[ , white_value_diff := fifelse(race=="white", abs_value_diff, -abs_value_diff)]
+
+
+#Create a column with 0/1 if neighborhood is white
+d_filtered[ , is_white := fifelse(race=="white", 1, 0)]
+
+```
+
+```{r}
+#Create a variable for whether street view contained a person
+
+d_filtered[ , street_view_person := rep(0, .N)]
+
+#Change Property 1 & 3s to 1
+d_filtered[ (property == "Property 1") & (question == "3s") , street_view_person := 1] 
+
+#Change both Properties of 10s to 1
+d_filtered[  (question == "10s") , street_view_person := 1] 
+
+#Change property 2 of 11s to 1
+d_filtered[  (property == "Property 2") &(question == "11s") , street_view_person := 1] 
+
+#Change property 1 of 13s to 1
+d_filtered[  (property == "Property 1") &(question == "13s") , street_view_person := 1] 
+
+#Change property 2 of 14s to 1
+d_filtered[  (property == "Property 2") &(question == "14s") , street_view_person := 1] 
+
+#Change property 1&2 of 18s to 1
+d_filtered[  (question == "18s") , street_view_person := 1] 
+
+#Change property 1 of 20s to 1
+d_filtered[  (property == "Property 1") &(question == "20s") , street_view_person := 1] 
+
+#Change property 1 of 25s to 1
+d_filtered[  (property == "Property 1") &(question == "25s") , street_view_person := 1] 
+
+
+d_filtered
+```
+
+
+```{r}
+ggplot(data =d_filtered[ treatment==0, ], aes(d_filtered[ treatment==0, white_value_diff])) +
+  geom_histogram()
+```
+
+
+
+```{r}
+ggplot(data =d_filtered[ treatment==1, ], aes(d_filtered[ treatment==1, white_value_diff])) +
+  geom_histogram()
+```
+
+```{r}
+fwrite(d_filtered, "filtered_data.csv")
+```
+
+```{r}
+df = fread("filtered_data.csv")
+df
+names(df)
+```
+
+```{r}
+#Some attempts at writing a model
+
+
+#For each question, we want the difference in counts of properties selected by is_white
+new_df = df[ , .(count=.N), keyby=.(question, is_white, treatment) ]
+new_df
+
+
+#We want to predict the difference of the counts of the is_white or not properties for each question
+new_df[ , is_white_count:= diff(count, lag=1), keyby = .(question, treatment)]
+new_df
+
+model = new_df[ , lm(is_white_count ~ treatment)]
+
+coeftest(model,  vcov = vcovCL(model, cluster = new_df[ , question]))
+```
