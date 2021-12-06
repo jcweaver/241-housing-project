@@ -107,12 +107,13 @@ fwrite(d_filtered, "filtered_data.csv")
 ```
 
 ```{r}
-df = fread("filtered_data.csv")
+df = data.table::fread("filtered_data.csv")
 df
 names(df)
 ```
 
 ```{r}
+typeof(df)
 #Some attempts at writing a model
 
 
@@ -128,4 +129,15 @@ new_df
 model = new_df[ , lm(is_white_count ~ treatment)]
 
 coeftest(model,  vcov = vcovCL(model, cluster = new_df[ , question]))
+```
+
+```{r}
+is_white_model = df[, lm(is_white ~ treatment + as.factor(id))]
+coeftest(is_white_model,  vcov = vcovCL(is_white_model, cluster = df[ , as.factor(id)]))
+```
+
+
+```{r}
+value_model = df[, lm(white_value_diff ~ treatment + as.factor(id))]
+coeftest(value_model,  vcov = vcovCL(value_model, cluster = df[ , as.factor(id)]))
 ```
