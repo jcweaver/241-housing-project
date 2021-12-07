@@ -8,13 +8,15 @@ library(data.table)
 
 library(sandwich)
 library(lmtest)
-
 library(AER) 
 library(dplyr)
 
 
 library(ggplot2) 
+
 library(patchwork)
+
+library("MatchIt")
 ```
 
 ```{r load draft data}
@@ -141,3 +143,19 @@ coeftest(is_white_model,  vcov = vcovCL(is_white_model, cluster = df[ , as.facto
 value_model = df[, lm(white_value_diff ~ treatment + as.factor(id))]
 coeftest(value_model,  vcov = vcovCL(value_model, cluster = df[ , as.factor(id)]))
 ```
+
+```{r}
+
+```
+
+```{r}
+#m.out <- matchit(treatment ~ tk + tk, data = d_filtered, method = "full")
+```
+
+
+
+
+
+
+
+
