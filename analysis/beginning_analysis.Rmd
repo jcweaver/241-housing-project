@@ -21,7 +21,9 @@ library("MatchIt")
 
 ```{r load draft data}
 #Read in the data
-d <- fread('joined_results.tsv')
+#d <- fread('joined_results.tsv')
+
+d <- fread('joined_results_2nd_run.tsv')
 
 
 head(d)
@@ -29,18 +31,22 @@ names(d)
 ```
 
 ```{r}
+#Not needed with 2nd run tsv
+
 #Joined data contains 2 rows per response per person
 #Filter out the row that does not match their response
 
 #Convert Property (i.e. Potential Answer) to a character from an int
-d[ , Property := paste("Property", as.character(Property))]
-d
+#d[ , Property := paste("Property", as.character(Property))]
+#d
 ```
 
 ```{r}
+#Not needed with 2nd run tsv
+
 #Filter to where user input property == potential response Property
-d_filtered = d[ property == Property , ]
-d_filtered
+# d_filtered = d[ property == Property , ]
+# d_filtered
 ```
 
 
@@ -50,45 +56,45 @@ d_filtered
 #i.e. If race==white of response, abs_value_diff, else use -abs_value_diff
 
 #Using data.table fifelse
-d_filtered[ , white_value_diff := fifelse(race=="white", abs_value_diff, -abs_value_diff)]
+d[ , white_value_diff := fifelse(race_y=="white", abs_value_diff, -abs_value_diff)]
 
 
 #Create a column with 0/1 if neighborhood is white
-d_filtered[ , is_white := fifelse(race=="white", 1, 0)]
+d[ , is_white := fifelse(race_y=="white", 1, 0)]
 
 ```
 
 ```{r}
 #Create a variable for whether street view contained a person
 
-d_filtered[ , street_view_person := rep(0, .N)]
+d[ , street_view_person := rep(0, .N)]
 
 #Change Property 1 & 3s to 1
-d_filtered[ (property == "Property 1") & (question == "3s") , street_view_person := 1] 
+d[ (property_chosen == "Property 1") & (question == "3s") , street_view_person := 1] 
 
 #Change both Properties of 10s to 1
-d_filtered[  (question == "10s") , street_view_person := 1] 
+d[  (question == "10s") , street_view_person := 1] 
 
 #Change property 2 of 11s to 1
-d_filtered[  (property == "Property 2") &(question == "11s") , street_view_person := 1] 
+d[  (property_chosen == "Property 2") &(question == "11s") , street_view_person := 1] 
 
 #Change property 1 of 13s to 1
-d_filtered[  (property == "Property 1") &(question == "13s") , street_view_person := 1] 
+d[  (property_chosen == "Property 1") &(question == "13s") , street_view_person := 1] 
 
 #Change property 2 of 14s to 1
-d_filtered[  (property == "Property 2") &(question == "14s") , street_view_person := 1] 
+d[  (property_chosen == "Property 2") &(question == "14s") , street_view_person := 1] 
 
 #Change property 1&2 of 18s to 1
-d_filtered[  (question == "18s") , street_view_person := 1] 
+d[  (property_chosen == "18s") , street_view_person := 1] 
 
 #Change property 1 of 20s to 1
-d_filtered[  (property == "Property 1") &(question == "20s") , street_view_person := 1] 
+d[  (property_chosen == "Property 1") &(question == "20s") , street_view_person := 1] 
 
 #Change property 1 of 25s to 1
-d_filtered[  (property == "Property 1") &(question == "25s") , street_view_person := 1] 
+d[  (property_chosen == "Property 1") &(question == "25s") , street_view_person := 1] 
 
 
-d_filtered
+d
 ```
 
 
@@ -115,6 +121,8 @@ names(df)
 ```
 
 ```{r}
+df = d
+
 typeof(df)
 #Some attempts at writing a model
 

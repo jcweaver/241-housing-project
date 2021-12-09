@@ -1,0 +1,161 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r load packages, message = FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(AER) 
+library(dplyr)
+
+
+library(ggplot2) 
+library(patchwork)
+
+library(MatchIt)
+library(optmatch)
+```
+
+```{r load draft data}
+#Read in the data
+d <- fread('Data/joined_results_2nd_run.tsv')
+
+
+head(d)
+names(d)
+```
+
+
+
+```{r}
+#Filter to where user input property == potential response Property
+d_filtered = d
+d_filtered
+```
+
+
+
+```{r}
+#For every row, create a column that is the value difference of white to non white
+#i.e. If race==white of response, abs_value_diff, else use -abs_value_diff
+
+#Using data.table fifelse
+d_filtered[abs_value_diff==0,abs_value_diff := 0.5]
+d_filtered[ , white_value_diff := fifelse(nb_race=="white", abs_value_diff, -abs_value_diff)]
+
+d_filtered[ ,log_abs_diff := log(abs_value_diff)]
+d_filtered[, log_white_diff := fifelse(nb_race=="white", log_abs_diff, -log_abs_diff)]
+
+
+#Create a column with 0/1 if neighborhood is white
+d_filtered[ , nb_is_white := fifelse(nb_race=="white", 1, 0)]
+
+```
+
+
+```{r}
+#Create a variable for whether street view contained a person
+
+d_filtered[ , street_view_person := rep(0, .N)]
+
+#Change Property 1 & 3s to 1
+d_filtered[ (property_chosen == "Property 1") & (question == "3s") , street_view_person := 1] 
+
+#Change both Properties of 10s to 1
+d_filtered[  (question == "10s") , street_view_person := 1] 
+
+#Change property 2 of 11s to 1
+d_filtered[  (property_chosen == "Property 2") &(question == "11s") , street_view_person := 1] 
+
+#Change property 1 of 13s to 1
+d_filtered[  (property_chosen == "Property 1") &(question == "13s") , street_view_person := 1] 
+
+#Change property 2 of 14s to 1
+d_filtered[  (property_chosen == "Property 2") &(question == "14s") , street_view_person := 1] 
+
+#Change property 1&2 of 18s to 1
+d_filtered[  (question == "18s") , street_view_person := 1] 
+
+#Change property 1 of 20s to 1
+d_filtered[  (property_chosen == "Property 1") &(question == "20s") , street_view_person := 1] 
+
+#Change property 1 of 25s to 1
+d_filtered[  (property_chosen == "Property 1") &(question == "25s") , street_view_person := 1] 
+
+
+d_filtered
+```
+
+
+
+
+
+
+```{r}
+typeof(d_filtered)
+#Some attempts at writing a model
+
+
+#For each question, we want the difference in counts of properties selected by is_white
+new_df = d_filtered[ , .(count=.N), keyby=.(question, nb_is_white, treatment) ]
+new_df
+
+
+#We want to predict the difference of the counts of the is_white or not properties for each question
+new_df[ , is_white_count:= diff(count, lag=1), keyby = .(question, treatment)]
+new_df
+
+model = new_df[ , lm(is_white_count ~ treatment)]
+
+coeftest(model,  vcov = vcovCL(model, cluster = new_df[ , question]))
+```
+
+```{r}
+df = d_filtered
+prop_white_model = df[, lm(nb_is_white ~ treatment + as.factor(id))]
+coeftest(prop_white_model,
+         vcov = vcovCL(prop_white_model,
+                       cluster = df[ , as.factor(id)]))
+
+
+```
+
+```{r}
+#Filter to just Pairs that included a black neighborhood
+df_black = d_filtered[Pair_ID %in% c(14, 15, 18, 20, 25) ]
+model_black_nb = df_black[, lm(nb_is_white ~ treatment + as.factor(id))]
+coeftest(model_black_nb,
+         vcov = vcovCL(model_black_nb,
+                       cluster = df_black[ , as.factor(id)]))
+
+
+stargazer::stargazer(model_black_nb, 
+                     type='text', 
+                     se = list(NULL,sqrt(diag(vcovCL(model_black_nb, cluster = df_black[ , as.factor(id)])))))
+
+
+stargazer::stargazer(model_black_nb, header = T, type='html', se = list(NULL,sqrt(diag(vcovCL(model_black_nb, cluster = df_black[ , as.factor(id)])))),out='Models/prop_white_model_black_table.html')
+```
+
+```{r}
+#Filter to just Pairs that included a black or hispanic neighborhood
+df_not_asian = d_filtered[Pair_ID %in% c(13, 14, 15, 18, 20, 25) ]
+model_nb = df_not_asian[, lm(nb_is_white ~ treatment + as.factor(id))]
+coeftest(model_nb,
+         vcov = vcovCL(model_nb,
+                       cluster = df_not_asian[ , as.factor(id)]))
+
+
+stargazer::stargazer(model_nb, 
+                     type='text', 
+                     se = list(NULL,sqrt(diag(vcovCL(model_nb, cluster = df_not_asian[ , as.factor(id)])))))
+
+
+stargazer::stargazer(model_nb, header = T, type='html', se = list(NULL,sqrt(diag(vcovCL(model_nb, cluster = df_not_asian[ , as.factor(id)])))),out='prop_white_model_asian_table.html')
+```
