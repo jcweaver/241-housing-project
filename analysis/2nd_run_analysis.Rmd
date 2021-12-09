@@ -123,13 +123,17 @@ by_person
 
 ``` {r}
 m.out <- matchit(treatment ~ sexual_orientation + age + marital_status + demographic_race
-                  + gender + ethnicity + residency_type + RE_job + education + ownership, data = by_person,
+                  + gender + ethnicity, data = by_person,
                  method = "full")
 m.out
 ```
 
+```{r}
+plot(m.out, type = "qq", which.xs = c("age", "education", "sexual_orientation"))
+```
+
 ``` {r}
-summary(m.out)
+summary(m.out, pair.dist = FALSE)
 ```
 
 ```{r}
