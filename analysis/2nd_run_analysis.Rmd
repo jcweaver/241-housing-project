@@ -17,6 +17,9 @@ library(dplyr)
 
 library(ggplot2) 
 library(patchwork)
+
+library(MatchIt)
+library(optmatch)
 ```
 
 ```{r load draft data}
@@ -111,6 +114,26 @@ fwrite(d_filtered, "filtered_data_2.csv")
 df = data.table::fread("filtered_data_2.csv")
 df
 names(df)
+```
+
+``` {r}
+by_person = df[!duplicated(df$id), ] 
+by_person
+```
+
+``` {r}
+m.out <- matchit(treatment ~ sexual_orientation + age + marital_status + demographic_race
+                  + gender + ethnicity, data = by_person,
+                 method = "full")
+m.out
+```
+
+```{r}
+plot(m.out, type = "qq", which.xs = c("age", "education", "sexual_orientation"))
+```
+
+``` {r}
+summary(m.out, pair.dist = FALSE)
 ```
 
 ```{r}
