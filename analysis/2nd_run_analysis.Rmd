@@ -155,6 +155,8 @@ model = new_df[ , lm(is_white_count ~ treatment)]
 coeftest(model,  vcov = vcovCL(model, cluster = new_df[ , question]))
 ```
 
+## Proportion Models
+
 ```{r}
 prop_white_model = df[, lm(nb_is_white ~ treatment + as.factor(id))]
 coeftest(prop_white_model,  vcov = vcovCL(prop_white_model, cluster = df[ , as.factor(id)]))
@@ -163,10 +165,46 @@ stargazer::stargazer(prop_white_model, header = T, type='html', se = list(NULL,s
 
 ```{r}
 prop_white_model_no_id = df[, lm(nb_is_white ~ treatment)]
-coeftest(prop_white_model_no_id,  vcov = vcovCL(prop_white_model_no_id))
-stargazer::stargazer(prop_white_model_no_id, header = T, type='html', se = list(NULL,sqrt(diag(vcovCL(prop_white_model_no_id, cluster = df[ , as.factor(id)])))),out='prop_white_model_no_id_table.html')
+coeftest(prop_white_model_no_id)
+stargazer::stargazer(prop_white_model_no_id, header = T, type='html',out='prop_white_model_no_id_table.html')
 ```
 
+```{r}
+prop_white_model_cluster_no_id = df[, lm(nb_is_white ~ treatment)]
+coeftest(prop_white_model_cluster_no_id,  vcov = vcovCL(prop_white_model_cluster_no_id))
+stargazer::stargazer(prop_white_model_cluster_no_id, header = T, type='html', se = list(NULL,sqrt(diag(vcovCL(prop_white_model_cluster_no_id, cluster = df[ , as.factor(id)])))),out='prop_white_model_cluster_no_id_table.html')
+```
+
+```{r}
+prop_white_model = df[, lm(nb_is_white ~ treatment + as.factor(id))]
+coeftest(prop_white_model)
+stargazer::stargazer(prop_white_model, header = T, type='html',out='prop_white_model_table.html')
+plot(prop_white_model)
+```
+
+```{r}
+prop_white_model_demo = df[, lm(nb_is_white ~ treatment + as.factor(demographic_race) + as.factor(ethnicity) + as.factor(gender) + age  + as.factor(education) + as.factor(residency_type) + as.factor(ownership) + as.factor(RE_job) + as.factor(id))]
+coeftest(prop_white_model_demo)
+stargazer::stargazer(prop_white_model_demo, header = T, type='html',out='prop_white_model_demo_table.html')
+
+coeftest(prop_white_model_demo,  vcov = vcovCL(prop_white_model_demo))
+```
+
+```{r}
+prop_white_model_demo_no_id = df[, lm(nb_is_white ~ treatment + as.factor(demographic_race) + as.factor(ethnicity) + as.factor(gender) + age  + as.factor(education) + as.factor(residency_type) + as.factor(ownership) + as.factor(RE_job))]
+coeftest(prop_white_model_demo_no_id)
+stargazer::stargazer(prop_white_model_demo_no_id, header = T, type='html',out='prop_white_model_demo_no_id_table.html')
+```
+
+```{r}
+stargazer::stargazer(prop_white_model_no_id, prop_white_model_demo_no_id, prop_white_model, prop_white_model_demo, header = T, type='html',out='prop_combined_table.html')
+```
+
+```{r}
+df[,.N, by=nb_race]
+```
+
+## Value Difference models
 
 ```{r}
 value_model = df[, lm(white_value_diff ~ treatment + as.factor(id))]
@@ -194,3 +232,57 @@ stargazer::stargazer(value_model_no_cluster, header = T, type='html',out='value_
 plot(value_model_no_cluster)
 
 ```
+
+```{r}
+value_model_no_id = df[, lm(log(white_value_diff) ~ treatment)]
+
+coeftest(value_model_no_id)
+
+stargazer::stargazer(value_model_no_id, header = T, type='html',out='value_model_no_id_table.html')
+```
+
+```{r}
+value_model_cluster_no_id = df[, lm(log(white_value_diff) ~ treatment)]
+
+coeftest(value_model_cluster_no_id, se = sqrt(diag(vcovCL(value_model_log, cluster = df[ , as.factor(id)]))))
+
+stargazer::stargazer(value_model_cluster_no_id, header = T, type='html', se = list(NULL,sqrt(diag(vcovCL(value_model_log, cluster = df[ , as.factor(id)])))),out='value_model_cluster_no_id_table.html')
+```
+
+```{r}
+value_model_demo = df[, lm(log(white_value_diff) ~ treatment + as.factor(demographic_race) + as.factor(ethnicity) + as.factor(gender) + age  + as.factor(education) + as.factor(residency_type) + as.factor(ownership) + as.factor(RE_job) + as.factor(id))]
+
+coeftest(value_model_demo)
+stargazer::stargazer(value_model_demo, header = T, type='html',out='value_model_demo_table.html')
+
+```
+
+```{r}
+value_model_demo_no_id = df[, lm(log(white_value_diff) ~ treatment + as.factor(demographic_race) + as.factor(ethnicity) + as.factor(gender) + age  + as.factor(education) + as.factor(residency_type) + as.factor(ownership) + as.factor(RE_job))]
+
+coeftest(value_model_demo_no_id)
+stargazer::stargazer(value_model_demo_no_id, header = T, type='html',out='value_model_demo_no_id_table.html')
+```
+
+
+```{r}
+stargazer::stargazer(value_model_no_id, value_model_demo_no_id, value_model_log, value_model_demo, header = T, type='html',out='value_combined_table.html')
+```
+
+```{r}
+df
+df[order(Pair_ID),mean(nb_is_white), by=.(Pair_ID,treatment)][,mean(V1), by=treatment]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
