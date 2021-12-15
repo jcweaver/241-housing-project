@@ -1,5 +1,6 @@
 ## American Community Survey (ACS) & Other Data Collection
 
+### ACS Data Collection & Pairing Files
 Below are some files used for collecting data for tracts in the most populous counties using the Census API.
 
 | <div style="width:50px">File name</div> |  <div style="width:150px">Description</div> |
@@ -13,9 +14,11 @@ Below are some files used for collecting data for tracts in the most populous co
 | pairs_with_latlong.csv | The result of adding latitude/longitude to the pairings_26.csv |
 | pairs_with_hisp.csv | The result of adding additional race/ethnicity ACS variables to the pairings_26.csv |
 
+
+### Additional Datasets
 Below are some additional files that need to be downloaded in order to run the Data Gathering & Pairing notebooks as they are not in the Github due to their large size.
 
-| <div style="width:50px">File name</div> | <div style="width:75px">Source </div>| <div style="width:75px">Description</div> |
+| <div style="width:35px">File name</div> | <div style="width:50px">Source </div>| <div style="width:75px">Description</div> |
 | --- | --- | --- |
 | 2019_Gaz_tracts_national.txt | https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html | A file mapping census tract IDs to land area to use to calculate population and housing densities. Note because we are pulling data from ACS5 2019, we need to use the 2019 tracts and not the 2020 or 2021 tracts which are slightly different. |
 | co-est2019-alldata.csv | https://www2.census.gov/programs-surveys/popest/datasets/2010-2019/counties/totals/co-est2019-alldata.csv | A file containing the population estimates for all counties in the US. This is used to identify the most populous counties. |
@@ -27,7 +30,7 @@ Note about our "neigborhood" of a Census tract. Some of the data we wanted to qu
 * Update the utils.py to support calling data for block groups where applicable
 * Update the data gathering notebook 
 
-Working with Census Data
+### Working with Census Data
 We knew we wanted to be able to evaluate demographic data so we decided to use Census data. There are several levels of statistical areas that the Census provides data for. Census tracts are defined as small, relatively permanent statistical subdivisions of a county, with a minimum population of 1,200 and a maximum population of 8,000. Each census tract/BNA could contain as many as nine BGs (block groups 1 to 9; there is no block group 0). Census blocks, the smallest geographic area for which the Bureau of the Census collects and tabulates decennial census data, are formed by streets, roads, railroads, streams and other bodies of water, other visible physical and cultural features, and the legal boundaries shown on Census Bureau maps. A block group consists of all census blocks whose numbers begin with the same digit in a given census tract or BNA [11]. We chose to use tracts for our initial analysis because they were the smallest statistical area that all of our variables pulled from the American Community Survey (ACS) could provide data for. Note that some of our variables are available to pull at the block group level and that we could use tract level data where block group data is not available. The GEOID for a block group is the 11 digits from the tract (STATE+COUNTY+TRACT) + 1 digit from the BLOCK GROUP.
 
 Sources:
