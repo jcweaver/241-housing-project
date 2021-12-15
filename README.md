@@ -40,8 +40,28 @@ For more information, see the following links:
 --- 
 ## Data
 
+| File  | Description |
+| ------------- | ------------- |
+| [question_info.csv](Data/question_info.csv)  | Includes information about properties and neighborhoods within each question, formatted to be joined with Qualtrics Survey results  |
+| [question_information_agg.csv](Data/question_information_agg.csv)  | Includes information about properties and neighborhoods within each question, formatted to be used with dataset aggregated by question  |
+| [filtered_data_2](Data/filtered_data_2)  | Data from the second mechanical turk run, with certain calculated columns added  |
+| [joined_results_2nd_run.tsv](Data/joined_results_2nd_run.tsv)  | Data from second MT run, joined with information about the properties and neighborhoods  |
+| [by_question_with_info.csv](Data/by_question_with_info.csv)  | Second MT run data aggregated by question  |
+| [pairs_with_latlong.csv](Survey_Creation/Census/pairs_with_latlong.csv)  | Information about all of the pairs of neighborhoods  |
+| [pairs_with_hisp.csv](Survey_Creation/Census/pairs_with_hisp.csv)  | The result of adding additional race/ethnicity ACS variables to the pairings_26.csv  |
+| [Additional datasets](https://drive.google.com/drive/u/1/folders/18WbDkHoGQrJFFhbnI84WleJ2mUvgeERA)  | Google Drive folder containing some additional versions of datasets used in creating the survey  |
+| [Documentation](https://docs.google.com/spreadsheets/d/1CBIDCBNKgGXP8e1GjYA5r9mQYlXJ033PwDcxmZaUPjg/edit#gid=772509397)  | Google Sheet that includes definitions of calculated columns in datasets.  |
+
 ---
 ## Analysis
+
+| File  | Description |
+| ------------- | ------------- |
+| [2nd_run_analysis_jcw.Rmd](Analysis/2nd_run_analysis_jcw.Rmd)  | Joanie's work on filtering and cleaning the dataset and creating a model that only included white/black pairs  |
+| [2nd_run_analysis.Rmd](Analysis/2nd_run_analysis.Rmd)  | Brody's work creating models  |
+| [question_model.Rmd](Analysis/question_model.Rmd)  | Ginny's model of data aggregated by question  |
+| [beginning_analysis.Rmd](Analysis/beginning_analysis.Rmd)  | Analysis of first set of pilot data  |
+
 
 ---
 ## Timeline
