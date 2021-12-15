@@ -24,7 +24,7 @@ library(optmatch)
 
 ```{r load draft data}
 #Read in the data
-d <- fread('joined_results_2nd_run.tsv')
+d <- fread('../Data/joined_results_2nd_run.tsv')
 
 
 head(d)
@@ -107,11 +107,11 @@ ggplot(data =d_filtered[ treatment==1, ], aes(d_filtered[ treatment==1, white_va
 ```
 
 ```{r}
-fwrite(d_filtered, "filtered_data_2.csv")
+fwrite(d_filtered, "../Data/filtered_data_2.csv")
 ```
 
 ```{r}
-df = data.table::fread("filtered_data_2.csv")
+df = data.table::fread("../Data/filtered_data_2.csv")
 df
 names(df)
 ```
