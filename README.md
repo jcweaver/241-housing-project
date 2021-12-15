@@ -66,7 +66,18 @@ For more information, see the following links:
 ---
 ## Timeline
 
-**Idea Formulation: September-October 2021**
+### Key Events
+
+* [Idea Formulation](#idea-formulation)
+* [Initial Survey Creation](#initial-survey-creation)
+* [Signal Testing Survey](#signal-testing-survey)
+* [Survey Refinement and Data Cleaning](#survey-refinement-and-data-cleaning)
+* [Second Pilot Run](#second-pilot-run)
+* [Proposed Future Work](#proposed-future-work)
+
+
+### Idea Formulation
+September-October 2021
 
 * 9/12: Joanie [proposed initial ideas](https://ucbischool.slack.com/archives/C02EC0G0Y0Z/p1631484029019200) for an experiment to look at how appraiser response rate varied by neighborhood.
 
@@ -83,7 +94,8 @@ For more information, see the following links:
   * Chose Qualtrics for the survey and discussed randomization within Qualtrics
   * Talked about several other ideas that we have not, as of December 2021, implemented
 
-**Initial Survey Creation**
+### Initial Survey Creation
+Mid October to Early November 2021
 
 * 10/17: [Joanie used census data to identify pairs](https://docs.google.com/document/d/1v4HNeZODqUlKigHOstvk2H5Dj2hG_AhYURkBf-5ZVos/edit)
   * Census pairing process documented [here](./ACS_gathering/README.md)
@@ -103,7 +115,8 @@ For more information, see the following links:
   * This caused delay in signal testing survey
   * Joanie proposes using Observable to create iframes to embed in Qualtrics questions
 
-**Signal Testing Survey**
+### Signal Testing Survey
+November 2021
 
 11/8: Brody created [this survey](https://berkeley.ca1.qualtrics.com/survey-builder/SV_6ExZvJjhhkRKpr8/edit) for determing the race that people associated with our neighborhoods. In creating this, he noticed that some of the census tracts were not residential, so he excluded these from the survey. 
 
@@ -133,7 +146,8 @@ For more information, see the following links:
   * Calculated the square feet off of the bedrooms and bathrooms and have a small random offset to make the properties a tiny bit different from each other
   * The year built is just a random year within a certain range and a small offset.
 
-**First Pilot Run**
+### First Pilot Run
+December 2021
 
 11/29: Began reviewing results of first pilot run
 
@@ -149,7 +163,8 @@ For more information, see the following links:
   * Determined that there were several properties that were
   * Noticed that there was an issue with the tables in the survey in that some of the values in treatment were different from the values in countrol
 
-**Survey Refinement and Data Cleaning**
+### Survey Refinement and Data Cleaning
+December 2021
 
 12/1: Ginny changed the information in the tables in the survey. 
   * Changed values to correct skew. In each pair, neither property was allowed to have both higher square footage and a more recent build date.
@@ -162,7 +177,7 @@ For more information, see the following links:
   * Added a column based on whether the streetview for user input property had a person in it
   * Added a column with 1/0 if user input property white or not
 
-**Second Pilot Run**
+### Second Pilot Run
 
 12/3: Second round of data collection on Mechanical Turk begins.
 
@@ -191,7 +206,7 @@ For more information, see the following links:
 
 12/9: Feedback from Alex suggests that clustering on the survey takers messes up randomization, and should not be done.
 
-**Proposed Future Work** 
+### Proposed Future Work
 
 12/9: Brody proposes that in the next version of the survey, we add questions with neighborhoods that are white/white, non-white/non-white in order to use this as a "pre-test" fixed effect for each respondent.
 
