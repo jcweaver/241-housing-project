@@ -3,7 +3,8 @@
 Below are some files used for collecting data for tracts in the most populous counties using the Census API.
 
 | <div style="width:50px">File name</div> |  <div style="width:150px">Description</div> |
- |utils.py | Leveraged and modified some code Joanie used for a project with Centri Tech Foundation, this file contains helper functions for calling the Census API |
+| --- | --- |
+| utils.py | Leveraged and modified some code Joanie used for a project with Centri Tech Foundation, this file contains helper functions for calling the Census API |
 | 241_Data_Gathering.ipynb | A jupyter notebook that calls the Census API to collect ACS data and merges it with other data sources |
 | Pairing.ipynb | A jupyter notebook that takes the results from the data gathering notebook and outputs a csv file of tract/neighborhood pairs and their statistics. This file also has code to add back the latitude/longitude pairs for each neighborhood to help with the initial google maps drop |
 | census_tracts_hisp.csv | A csv file output after collecting the ACS variables from the Census API |

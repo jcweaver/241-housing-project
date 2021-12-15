@@ -111,7 +111,7 @@ For more information, see the following links:
 
 11/29: Began analysis of first pilot run
 
-11/30 Meeting with Alex
+11/30 [Meeting with Alex](https://zoom.us/rec/share/ICYqFt6Oj9YuQ5qHhjE8FqcEaM1Sm5TucRpLVlOvIl0gjriVyIc72nSiHHljZEWY.dQuZ4b6Aym48dsYo)
 
 **Survey Refinement**
 
