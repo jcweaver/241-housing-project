@@ -7,9 +7,9 @@
 ## Contents
 
 * [Experiment](#experiment)
-* [Timeline](#timeline)
 * [Data](#data)
 * [Analysis](#analysis)
+* [Timeline](#timeline)
 ---
 ## Experiment
 
@@ -36,6 +36,12 @@ For more information, see the following links:
 * [A preview of the Qualtrics survey](https://berkeley.qualtrics.com/jfe/preview/SV_3VpBucuTl1vyOwe?Q_CHL=preview&Q_SurveyVersionID=current)
 * [The survey](https://berkeley.ca1.qualtrics.com/surveys/SV_3VpBucuTl1vyOwe/edit)
 * [IRB proposal documents](https://drive.google.com/drive/u/1/folders/1Xmkixn9Ew4H8yYJCI5x_PZCzYekRhfb6)
+
+--- 
+## Data
+
+---
+## Analysis
 
 ---
 ## Timeline
@@ -109,19 +115,64 @@ For more information, see the following links:
 
 **First Pilot Run**
 
-11/29: Began analysis of first pilot run
+11/29: Began reviewing results of first pilot run
 
-11/30 [Meeting with Alex](https://zoom.us/rec/share/ICYqFt6Oj9YuQ5qHhjE8FqcEaM1Sm5TucRpLVlOvIl0gjriVyIc72nSiHHljZEWY.dQuZ4b6Aym48dsYo)
+11/30: Meeting with Alex ([Zoom recording](https://zoom.us/rec/share/ICYqFt6Oj9YuQ5qHhjE8FqcEaM1Sm5TucRpLVlOvIl0gjriVyIc72nSiHHljZEWY.dQuZ4b6Aym48dsYo), [meeting notes](https://docs.google.com/document/d/1zfC04zIHiQkqeJh-_X4UrQQ-OFehoScf6T8bkXScj9c/edit))
+  * Talked about different approaches for modeling
+  * Decided to use information given about the properties and the neighborhoods as covariates in the model in order to control for artificially created variation in square footage and year built
 
-**Survey Refinement**
+12/1: Brody created a dataset that joined the responses to Qualtrics questions with information about the properties and neighborhoods
+
+12/1: [Meeting to review results from pilot run](https://docs.google.com/document/d/1mMjQq7rL9WTuOLaEz_ctsrSE1M2nU2GZ3E8QYScCvUQ/edit)
+  * Noticed duplicate rows in the joined dataset
+  * Checked proportion of answers in question to see if any were skewed to one property or another
+  * Determined that there were several properties that were
+  * Noticed that there was an issue with the tables in the survey in that some of the values in treatment were different from the values in countrol
+
+**Survey Refinement and Data Cleaning**
+
+12/1: Ginny changed the information in the tables in the survey. 
+  * Changed values to correct skew. In each pair, neither property was allowed to have both higher square footage and a more recent build date.
+  * Made sure that the information in the control questions was exactly the same as the information in the treatment questions
+  * Note: because of the issue of inconsistency between treatment and control values, as well as the subsequent changes to questions, the pilot data cannot be used for modeling.
+
+12/1: Joanie made the following changes to the dataset:
+  * Filtered out rows where the property != Property (i.e. removed rows where the user input property was not equal to the other property column)
+  * Added a new column for the white_value_diffassuming a property is white (i.e. if this is negative, that means a person guessed the nonwhite property)
+  * Added a column based on whether the streetview for user input property had a person in it
+  * Added a column with 1/0 if user input property white or not
 
 **Second Pilot Run**
 
---- 
-## Data
+12/3: Second round of data collection on Mechanical Turk begins.
 
----
-## Analysis
+12/6: Brody worked on data cleaning and modeling.
+  * Updated the data set to use the most recent turk results and neighborhood data
+  * Removed the duplicate rows and added more of the demographics data as well.
+  * Only included a subset of the questions that are required so our data isn't filled with nulls, but if we want any of those conditional questions we can go back and add them. 
+  * Noted that the "average" MTurk worker doesn't have much real estate experience.  
+  * Added basic models with fixed effects for the survey takers.
+  * In this version of the dataset,  demographic_race represents the race of the survey taker and nb_race is the race of the neighborhood they chose
 
----
-## Future Work
+12/7: [Meeting to discuss modeling and analysis](https://docs.google.com/document/d/1J02UH6TaZRE2sw3IaMu33FaB8lnVVVv4twgNbqH9be0/edit)
+  * Brody shares information about models he created: 
+      * neighborhood is white ~ treatment + survey taker id
+      * Cluster by survey taker across all questions
+  * Ginny proposes a model with data aggregated by questions
+
+12/8: Amanda works on covariate balance check - [see slide 11](https://docs.google.com/presentation/d/1sye7xdUww-SUqu3m22Xp4Bh-P0B75o5djAzGNQdRRjs/edit#slide=id.g10692301cd0_0_53).
+  * Std mean diff is the difference in means divided by the standard deviation of the entire population. Directionally, treatment minus control.
+
+12/8: Ginny creates dataset aggregated by question and two new models using this dataset:
+  * average proportion of white neighborhood selected as the outcome variable and treatment as the independent variable
+  * model above with question information included as covariates
+
+12/9: Joanie added a model that filters the data to 5 pairs with black/white, excluding asian/white and hispanic/white pairs. This results in a larger treatment effect.
+
+12/9: Feedback from Alex suggests that clustering on the survey takers messes up randomization, and should not be done.
+
+**Proposed Future Work** 
+
+12/9: Brody proposes that in the next version of the survey, we add questions with neighborhoods that are white/white, non-white/non-white in order to use this as a "pre-test" fixed effect for each respondent.
+
+12/13: Joanie notes that we may be able to pull different race percentages at the Census block group level, which is smaller than the tract. This may help create additional pairs.
