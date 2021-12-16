@@ -36,6 +36,7 @@ For more information, see the following links:
 * [A preview of the Qualtrics survey](https://berkeley.qualtrics.com/jfe/preview/SV_3VpBucuTl1vyOwe?Q_CHL=preview&Q_SurveyVersionID=current)
 * [The survey](https://berkeley.ca1.qualtrics.com/surveys/SV_3VpBucuTl1vyOwe/edit)
 * [IRB proposal documents](https://drive.google.com/drive/u/1/folders/1Xmkixn9Ew4H8yYJCI5x_PZCzYekRhfb6)
+* [Overview of the Census Data Collection & Pairing Process](https://github.com/jcweaver/241-housing-project/tree/main/Survey_Creation/Census)
 
 --- 
 ## Data
