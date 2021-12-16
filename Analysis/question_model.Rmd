@@ -1,0 +1,86 @@
+---
+title: "Question_model"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages, message = FALSE}
+library(data.table)
+
+library(sandwich)
+library(lmtest)
+
+library(AER) 
+library(dplyr)
+
+
+library(ggplot2) 
+library(patchwork)
+```
+
+```{r load draft data}
+#Read in the data
+d <- fread('filtered_data_2.csv')
+
+
+head(d)
+names(d)
+```
+
+```{r group by question}
+
+# d[, .(n = .N), keyby= .(draft_number, high_draft)]
+
+# d[,.(mean(nb_is_white),mean(value_diff)),by=.(question,treatment,year_built,sq_ft,population_density,median_age,median_household_income,bedrooms,bathrooms)]
+by_question <- d[,.(avg_nb_is_white = mean(nb_is_white),avg_white_value_diff = mean(white_value_diff)),by=.(question,treatment)]
+```
+
+```{r}
+
+d[,mean(nb_is_white),by=treatment]
+by_question
+```
+
+```{r}
+by_q_model <- by_question[, lm(avg_nb_is_white ~ treatment)]
+coeftest(by_q_model,  vcov = vcovCL(by_q_model))
+
+stargazer::stargazer(by_q_model, header = T, type='html',out='by_question_model_table.html')
+```
+
+```{r}
+fwrite(by_question, "by_question.csv")
+```
+
+```{r}
+d <- fread('by_question_with_info.csv')
+
+head(d)
+names(d)
+```
+``` {r}
+by_q_model_2 <- d[, lm(avg_nb_is_white ~ treatment + sq_ft_diff + year_built_diff + median_room_diff + mhi_diff + pd_diff + walk_score_diff)]
+coeftest(by_q_model_2,  vcov = vcovCL(by_q_model_2))
+
+stargazer::stargazer(by_q_model_2, header = T, type='html',out='by_question_with_info_model_table.html')
+                                                                      
+```
+```{r}
+by_q_value <- d[, lm(avg_value_diff ~ treatment)]
+coeftest(by_q_model,  vcov = vcovCL(by_q_model))
+
+stargazer::stargazer(by_q_value, header = T, type='html',out='by_question_value_diff_model_table.html')
+```
+
+
+```{r}
+by_q_value_info <- d[, lm(avg_value_diff ~ treatment)]
+coeftest(by_q_model,  vcov = vcovCL(by_q_model))
+
+stargazer::stargazer(by_q_model, header = T, type='html',out='by_question_value_diff_model_table.html')
+```
