@@ -38,3 +38,9 @@ Sources:
 * [Census Blocks and Block Groups](https://www2.census.gov/geo/pdfs/reference/GARM/Ch11GARM.pdf)
 * [GEOIDs](https://www.census.gov/programs-surveys/geography/guidance/geo-identifiers.html)
 
+### Pairing Process
+
+Currently the pairing process works as follows:
+- Iterate through every county in the dataset of tracts collected from ACS
+- For each tract in a county, for each other tract in a county. Test if one tract is greater than .5 white and if the other is less than .5 white. If so, continue. Otherwise, skip to next tract in the county.
+- For each matching variable (population density, housing density, median age, median male age, median income, pct hs grad, and walk index), is the same variable of each tract within .125*the standard deviation of the full column? If so, create a pair
